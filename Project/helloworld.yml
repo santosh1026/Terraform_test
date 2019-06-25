@@ -1,0 +1,27 @@
+---
+- hosts: dev
+  become: yes
+  remote_user: ec2-user
+  tasks:
+    - name: ensure nginx is at the latest version
+      apt: name=nginx state=latest
+    - name: start nginx
+      service:
+           name: nginx
+           state: started
+     tasks:
+      - shell: rm -rf /usr/share/nginx/html/index.html
+      
+    - name: ensure git is at the latest version
+      apt: name=git state=latest
+    - name: start git
+      service:
+           name: git
+           state: started
+    tasks:
+      - shell: git clone https://github.com/mavrick202/santosh.git
+               cd santosh
+               curl -sL http://169.254.169.254/latest/meta-data/public-hostname >> index.html
+			   cp index.html /usr/share/nginx/html
+               service nginx restart
+        
